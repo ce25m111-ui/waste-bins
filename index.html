@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waste Bins on Campus | IIT Tirupati</title>
+<meta name="description" content="An interactive field-survey map and photo gallery of waste bins across the IIT Tirupati campus, collected with QField.">
+<style>
+:root{--cream:#FFF7EA;--cream2:#FBEBD3;--white:#fff;--orange:#EA6A12;--orange-d:#C0500A;--ink:#2B2118;--muted:#7A6A5A;--line:#EBDCC6;--r:16px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.65 "Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif}
+a{color:var(--orange-d)}img{max-width:100%;display:block}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,247,234,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+nav b span{color:var(--orange)}
+nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0;font-size:14px}
+nav ul a{text-decoration:none;color:var(--muted);font-weight:600}nav ul a:hover{color:var(--orange)}
+@media(max-width:700px){nav ul{display:none}}
+.hero{padding:68px 0 50px;background:linear-gradient(180deg,var(--cream2),var(--cream))}
+.tag{display:inline-block;background:var(--white);border:1px solid var(--line);color:var(--orange-d);font-size:12.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 12px;border-radius:99px}
+h1{font-size:clamp(32px,5.4vw,56px);line-height:1.1;margin:18px 0 14px;letter-spacing:-1px}
+h1 em{font-style:normal;color:var(--orange)}
+.lead{max-width:720px;font-size:19px;color:#4b3d30}
+.btns{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{background:var(--orange);color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:99px;border:2px solid var(--orange);font-size:15px}
+.btn:hover{background:var(--orange-d);border-color:var(--orange-d)}.btn.o{background:transparent;color:var(--orange-d)}.btn.o:hover{background:var(--white)}
+section{padding:58px 0}.alt{background:var(--cream2)}
+h2{font-size:30px;margin:0 0 6px;letter-spacing:-.5px}
+h2::after{content:"";display:block;width:48px;height:4px;border-radius:4px;background:var(--orange);margin:10px 0 0}
+.sub{color:var(--muted);margin:14px 0 26px;max-width:760px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:0 6px 22px rgba(160,100,40,.07)}
+.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.stat small{color:var(--muted);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.6px}
+.stat .n{font-size:40px;font-weight:800;letter-spacing:-1px;color:var(--orange);line-height:1.15}
+.stat p{margin:2px 0 0;font-size:14px;color:#5a4a3b}
+.mapbox{padding:0;overflow:hidden}
+.mapbox iframe{width:100%;height:min(72vh,640px);min-height:420px;border:0;display:block}
+.bar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 18px;font-size:14px;color:var(--muted);border-top:1px solid var(--line)}
+.search{width:100%;max-width:420px;padding:12px 16px;border-radius:99px;border:1px solid var(--line);font:inherit;background:var(--white);outline:none}
+.search:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(234,106,18,.15)}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-top:18px}
+.ph{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;transition:.18s}
+.ph:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(160,100,40,.16);border-color:var(--orange)}
+.ph img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--cream2)}
+.ph div{padding:9px 12px;font-size:13.5px;line-height:1.4}.ph b{display:block}.ph span{color:var(--muted)}
+.cnt{color:var(--muted);font-size:14px;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{font-size:12.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);position:sticky;top:0;background:var(--white)}
+.scroll{overflow:auto;max-height:520px}
+.nop{color:var(--orange-d);font-weight:600}
+ul.cl{padding-left:20px;margin:8px 0}ul.cl li{margin:7px 0}
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.dl a{display:block;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink);font-weight:600;font-size:14.5px}
+.dl a span{display:block;font-weight:400;color:var(--muted);font-size:13px}.dl a:hover{border-color:var(--orange)}
+#lb{position:fixed;inset:0;background:rgba(43,33,24,.9);z-index:50;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+#lb.on{display:flex}#lb img{max-height:78vh;max-width:96vw;border-radius:10px;background:#fff}
+#lb p{color:#fff;margin:12px 0 0;text-align:center;font-size:15px}
+#lb button{position:absolute;background:var(--orange);color:#fff;border:0;border-radius:50%;width:44px;height:44px;font-size:20px;cursor:pointer}
+#lb .x{top:16px;right:16px}#lb .pv{left:14px;top:50%}#lb .nx{right:14px;top:50%}
+.err{background:#FFE9D2;border-left:4px solid var(--orange);padding:12px 16px;border-radius:8px;font-size:14.5px}
+footer{background:var(--ink);color:#e9dccb;padding:34px 0;font-size:14px}footer a{color:#ffb374}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><b>Campus<span>Bins</span></b>
+<ul><li><a href="#map">Map</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#table">Table</a></li><li><a href="#method">Method</a></li><li><a href="#data">Data</a></li></ul></div></nav>
+
+<header class="hero"><div class="wrap">
+<span class="tag">HS524M · QField field survey · Folium</span>
+<h1>Where are the <em>waste bins</em> on the IIT Tirupati campus?</h1>
+<p class="lead">A GPS-tagged field survey of waste bins, with photographs, mapped on an interactive web map. Click any marker to see what the bin looks like.</p>
+<div class="btns"><a class="btn" href="#map">Open the map</a><a class="btn o" href="#gallery">Browse the photos</a></div>
+</div></header>
+
+<section style="padding-bottom:20px"><div class="wrap">
+<div class="grid g4" id="stats">
+<div class="card stat"><small>Observations</small><div class="n" id="s1">–</div><p>GPS points recorded in QField</p></div>
+<div class="card stat"><small>With a photo</small><div class="n" id="s2">–</div><p>observations with at least one image</p></div>
+<div class="card stat"><small>Photographs</small><div class="n" id="s3">–</div><p>resized for the web (max 900 px)</p></div>
+<div class="card stat"><small>Collected by</small><div class="n" id="s4">–</div><p id="s4t">surveyor</p></div>
+</div></div></section>
+
+<section id="map"><div class="wrap">
+<h2>Interactive map</h2>
+<p class="sub">Switch between OpenStreetMap, a light map and Esri satellite imagery in the layer control. The map also has a measure tool, a mini-map, fullscreen and live coordinates. Click a marker for its photo and details.</p>
+<div class="card mapbox"><iframe src="waste_bins_map.html" title="Interactive map of waste bins at IIT Tirupati" loading="lazy"></iframe>
+<div class="bar"><span>Marker colour shows who collected the observation.</span><a href="waste_bins_map.html" target="_blank" rel="noopener">Open map in full page ↗</a></div></div>
+</div></section>
+
+<section id="gallery" class="alt"><div class="wrap">
+<h2>Photo gallery</h2>
+<p class="sub">Every photograph taken during the survey. Click an image to enlarge it, and use the arrow keys to move between photos.</p>
+<input class="search" id="q" type="search" placeholder="Filter by title or description, e.g. dry, AB2, library" aria-label="Filter photos and table">
+<div class="cnt" id="gc"></div>
+<div class="gal" id="gal"></div>
+</div></section>
+
+<section id="table"><div class="wrap">
+<h2>Observation table</h2>
+<p class="sub">All recorded bins with their coordinates (WGS84). Observations without a photo are flagged.</p>
+<div class="card scroll" style="padding:0"><table><thead><tr><th>#</th><th>Title</th><th>Description</th><th>Latitude</th><th>Longitude</th><th>Photos</th></tr></thead><tbody id="tb"></tbody></table></div>
+</div></section>
+
+<section id="method" class="alt"><div class="wrap">
+<h2>How it was made</h2>
+<div class="grid g2" style="margin-top:22px">
+<div class="card"><h3 style="margin-top:0">Workflow</h3>
+<ul class="cl"><li>Recorded point observations (title, note, photo) in the field with <b>QField</b>, stored in <code>notes.gpkg</code>.</li><li>Joined each photo to its note through <code>note_uuid</code> in Python (GeoPandas).</li><li>Fixed phone-photo rotation, then resized every photo to at most 900 px.</li><li>Built the map with <b>Folium</b> (Leaflet) with three basemaps and a layer per collector.</li><li>Checked the page for local file paths before hosting on GitHub Pages.</li></ul></div>
+<div class="card"><h3 style="margin-top:0">Notes and limits</h3>
+<ul class="cl"><li>The survey is a sample of observed bins, not a complete inventory of the campus.</li><li>Positions come from phone GPS, so points can be off by several metres, especially near buildings.</li><li>Some titles and descriptions were entered in a different order in the field, so read them together.</li><li>Photos are matched to notes by ID. A note can have several photos or none.</li></ul></div>
+</div></div></section>
+
+<section id="data"><div class="wrap">
+<h2>Data and downloads</h2>
+<p class="sub">Everything on this page is generated from the notebook.</p>
+<div class="dl">
+<a href="waste_bins_map.html">Interactive map<span>waste_bins_map.html</span></a>
+<a href="assets/waste_bins/bins_table.csv">Observation table<span>bins_table.csv</span></a>
+<a href="assets/waste_bins/summary.csv">Summary<span>summary.csv</span></a>
+<a href="waste_bins_q1.ipynb">Notebook<span>waste_bins_q1.ipynb</span></a></div>
+</div></section>
+
+<footer><div class="wrap">
+<p style="margin:0 0 6px"><b>Waste Bins on Campus, IIT Tirupati</b> · HS524M Test 2, Question 1 · Sharayu Dahibhate (CE25M111)</p>
+<p style="margin:0">Map data © OpenStreetMap contributors, © CARTO, Esri/Maxar/Earthstar Geographics. Field data collected with QField.</p>
+</div></footer>
+
+<div id="lb"><button class="x" aria-label="Close">✕</button><button class="pv" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="nx" aria-label="Next">›</button><p id="lbc"></p></div>
+
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function csv(t){t=t.replace(/^\uFEFF/,'');const rows=[];let r=[],f='',q=false;
+for(let i=0;i<t.length;i++){const c=t[i];
+if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}
+else if(c=='"')q=true;else if(c==','){r.push(f);f=''}
+else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;r.push(f);rows.push(r);r=[];f=''}else f+=c}
+if(f||r.length){r.push(f);rows.push(r)}
+const h=rows.shift();return rows.filter(x=>x.length>1).map(x=>Object.fromEntries(h.map((k,i)=>[k.trim(),(x[i]||'').trim()])))}
+
+let obs=[],photos=[],shown=[],cur=0;
+fetch('assets/waste_bins/bins_table.csv').then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{
+ obs=csv(t).map((o,i)=>({i:i+1,title:o.title,desc:o.description,who:o.collector,lat:+o.lat,lon:+o.lon,n:+o.n_photos||0,files:(o.photo_files||'').split('|').map(s=>s.trim()).filter(Boolean)}));
+ obs.forEach(o=>o.files.forEach(f=>photos.push({src:f,title:o.title,desc:o.desc,lat:o.lat,lon:o.lon,i:o.i})));
+ const who=[...new Set(obs.map(o=>o.who))];
+ $('s1').textContent=obs.length;$('s2').textContent=obs.filter(o=>o.n>0).length;$('s3').textContent=photos.length;
+ $('s4').textContent=who.length;$('s4t').textContent=who.length===1?who[0]:'surveyors';
+ render();
+}).catch(()=>{
+ const m='<div class="err">The data table could not be loaded. Check that <code>assets/waste_bins/bins_table.csv</code> is uploaded, and open this page from the published GitHub Pages link rather than as a local file.</div>';
+ $('gal').innerHTML=m;$('tb').innerHTML='<tr><td colspan="6">'+m+'</td></tr>'});
+
+function render(){
+ const k=$('q').value.toLowerCase().trim(),has=x=>!k||(x.title+' '+x.desc+' '+(x.who||'')).toLowerCase().includes(k);
+ shown=photos.filter(has);
+ $('gal').innerHTML=shown.map((p,j)=>`<div class="ph" data-j="${j}"><img src="${esc(p.src)}" alt="${esc(p.title)}" loading="lazy"><div><b>${esc(p.title)}</b><span>${esc(p.desc)||'&nbsp;'}</span></div></div>`).join('');
+ $('gc').textContent=`Showing ${shown.length} of ${photos.length} photos`;
+ $('tb').innerHTML=obs.filter(has).map(o=>`<tr><td>${o.i}</td><td>${esc(o.title)}</td><td>${esc(o.desc)}</td><td>${o.lat.toFixed(5)}</td><td>${o.lon.toFixed(5)}</td><td>${o.n?o.n:'<span class="nop">No photo</span>'}</td></tr>`).join('')}
+$('q').addEventListener('input',render);
+
+function open_(j){cur=(j+shown.length)%shown.length;const p=shown[cur];$('lbi').src=p.src;$('lbc').innerHTML=`<b>${esc(p.title)}</b>${p.desc?' · '+esc(p.desc):''}<br><small>${p.lat.toFixed(5)}, ${p.lon.toFixed(5)} · ${cur+1} / ${shown.length}</small>`;$('lb').classList.add('on')}
+$('gal').addEventListener('click',e=>{const c=e.target.closest('.ph');if(c)open_(+c.dataset.j)});
+document.querySelector('#lb .x').onclick=()=>$('lb').classList.remove('on');
+document.querySelector('#lb .pv').onclick=()=>open_(cur-1);document.querySelector('#lb .nx').onclick=()=>open_(cur+1);
+$('lb').addEventListener('click',e=>{if(e.target===$('lb'))$('lb').classList.remove('on')});
+document.addEventListener('keydown',e=>{if(!$('lb').classList.contains('on'))return;if(e.key=='Escape')$('lb').classList.remove('on');if(e.key=='ArrowLeft')open_(cur-1);if(e.key=='ArrowRight')open_(cur+1)});
+</script>
+</body>
+</html>
